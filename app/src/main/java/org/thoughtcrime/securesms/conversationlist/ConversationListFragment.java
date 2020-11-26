@@ -314,7 +314,7 @@ public class ConversationListFragment extends MainFragment implements ActionMode
 
     switch (item.getItemId()) {
       case R.id.menu_new_group:         handleCreateGroup();     return true;
-      case R.id.menu_settings:          handleDisplaySettings(); return true;
+      //case R.id.menu_settings:          handleDisplaySettings(); return true;
       case R.id.menu_clear_passphrase:  handleClearPassphrase(); return true;
       case R.id.menu_mark_all_read:     handleMarkAllRead();     return true;
       case R.id.menu_invite:            handleInvite();          return true;
@@ -445,7 +445,7 @@ public class ConversationListFragment extends MainFragment implements ActionMode
     ImageView icon = requireView().findViewById(R.id.toolbar_icon);
 
     AvatarUtil.loadIconIntoImageView(recipient, icon);
-    icon.setOnClickListener(v -> getNavigator().goToAppSettings());
+    //icon.setOnClickListener(v -> getNavigator().goToAppSettings());
   }
 
   private void initializeSearchListener() {
