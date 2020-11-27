@@ -137,7 +137,7 @@
         android:title="@string/preferences_app_protection__pin_reminders" />
 
     <org.thoughtcrime.securesms.components.SwitchPreferenceCompat
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:enabled="false"
         android:key="kbs.v2_lock_enabled"
         android:summary="@string/preferences_app_protection__add_extra_security_by_requiring_your_signal_pin_to_register"
