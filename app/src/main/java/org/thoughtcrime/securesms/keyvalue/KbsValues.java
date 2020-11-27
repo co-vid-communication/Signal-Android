@@ -88,7 +88,7 @@ public final class KbsValues extends SignalStoreValues {
    * Whether or not registration lock V2 is enabled.
    */
   public synchronized boolean isV2RegistrationLockEnabled() {
-    return getBoolean(V2_LOCK_ENABLED, true);
+    return getBoolean(V2_LOCK_ENABLED, false);
   }
 
   /** Should only be set by {@link org.thoughtcrime.securesms.pin.PinState}. */
