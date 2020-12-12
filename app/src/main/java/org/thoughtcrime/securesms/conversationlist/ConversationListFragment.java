@@ -103,6 +103,7 @@ import org.thoughtcrime.securesms.events.ReminderUpdateEvent;
 import org.thoughtcrime.securesms.insights.InsightsLauncher;
 import org.thoughtcrime.securesms.jobs.ServiceOutageDetectionJob;
 import org.thoughtcrime.securesms.keyvalue.SignalStore;
+import org.thoughtcrime.securesms.lock.SignalPinInputDialog;
 import org.thoughtcrime.securesms.lock.v2.CreateKbsPinActivity;
 import org.thoughtcrime.securesms.mediasend.MediaSendActivity;
 import org.thoughtcrime.securesms.megaphone.Megaphone;
@@ -332,7 +333,7 @@ public class ConversationListFragment extends MainFragment implements ActionMode
 
     switch (item.getItemId()) {
       case R.id.menu_new_group:         handleCreateGroup();     return true;
-      case R.id.menu_settings:          handleDisplaySettings(); return true;
+      case R.id.menu_settings:          openSettingsProtected(); return true;
       case R.id.menu_clear_passphrase:  handleClearPassphrase(); return true;
       case R.id.menu_mark_all_read:     handleMarkAllRead();     return true;
       case R.id.menu_invite:            handleInvite();          return true;
@@ -468,7 +469,7 @@ public class ConversationListFragment extends MainFragment implements ActionMode
     ImageView icon = requireView().findViewById(R.id.toolbar_icon);
 
     AvatarUtil.loadIconIntoImageView(recipient, icon);
-    icon.setOnClickListener(v -> getNavigator().goToAppSettings());
+    icon.setOnClickListener(v -> openSettingsProtected());
   }
 
   private void initializeSearchListener() {
@@ -660,6 +661,24 @@ public class ConversationListFragment extends MainFragment implements ActionMode
     viewModel.onMegaphoneVisible(megaphone);
   }
 
+  private void openSettingsProtected() {
+    SignalPinInputDialog.show(requireContext(), new SignalPinInputDialog.Callback() {
+      @Override
+      public void onPinCorrect() {
+        getNavigator().goToAppSettings();
+      }
+
+      @Override
+      public void onPinWrong() {
+        Toast.makeText(requireContext(), "The entered PIN was wrong.", Toast.LENGTH_LONG).show();
+      }
+
+      @Override
+      public void onDismissed() {
+      }
+    });
+  }
+
   private void updateReminders() {
     Context context = requireContext();
 
@@ -694,10 +713,6 @@ public class ConversationListFragment extends MainFragment implements ActionMode
 
   private void handleCreateGroup() {
     getNavigator().goToGroupCreation();
-  }
-
-  private void handleDisplaySettings() {
-    getNavigator().goToAppSettings();
   }
 
   private void handleClearPassphrase() {

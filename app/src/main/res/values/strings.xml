@@ -2780,6 +2780,13 @@
     <string name="InsightsReminder__view_insights">View Insights</string>
     <string name="InsightsReminder__invite">Invite</string>
 
+
+    <!-- PIN Input Dialog -->
+    <string name="pin_input_description">Please enter your Signal PIN to proceed.</string>
+    <string name="pin_input_noinput">Please enter your PIN.</string>
+    <string name="pin_input_pin">Signal PIN</string>
+    <string name="pin_input_check">Check</string>
+
     <!-- Edit KBS Pin -->
 
     <!-- BaseKbsPinFragment -->
