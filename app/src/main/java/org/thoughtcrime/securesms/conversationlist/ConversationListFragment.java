@@ -669,11 +669,6 @@ public class ConversationListFragment extends MainFragment implements ActionMode
       }
 
       @Override
-      public void onPinWrong() {
-        Toast.makeText(requireContext(), "The entered PIN was wrong.", Toast.LENGTH_LONG).show();
-      }
-
-      @Override
       public void onDismissed() {
       }
     });

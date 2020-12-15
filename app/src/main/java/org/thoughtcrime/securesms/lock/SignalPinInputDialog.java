@@ -2,7 +2,10 @@ package org.thoughtcrime.securesms.lock;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,8 +25,8 @@ public final class SignalPinInputDialog {
 
 
     public static void show(@NonNull Context context, @NonNull Callback callback) {
-        if (!SignalStore.kbsValues().hasPin()) {
-            throw new AssertionError("Must have a PIN!");
+        if (!SignalStore.kbsValues().hasPin() || SignalStore.kbsValues().hasOptedOut()) {
+            callback.onPinCorrect();  // we have no PIN to check here
         }
 
         AlertDialog dialog = new AlertDialog.Builder(context, ThemeUtil.isDarkTheme(context) ? R.style.Theme_Signal_AlertDialog_Dark_Cornered_ColoredAccent : R.style.Theme_Signal_AlertDialog_Light_Cornered_ColoredAccent)
@@ -37,6 +40,7 @@ public final class SignalPinInputDialog {
             dialog.show();
         }
 
+        TextView pinStatus = (TextView) DialogCompat.requireViewById(dialog, R.id.pin_input_status);
         EditText pinEditText = (EditText) DialogCompat.requireViewById(dialog, R.id.pin_input_pin);
         Button check = (Button) DialogCompat.requireViewById(dialog, R.id.pin_input_check);
         Button cancel = (Button) DialogCompat.requireViewById(dialog, R.id.pin_input_cancel);
@@ -53,16 +57,32 @@ public final class SignalPinInputDialog {
         check.setOnClickListener(view -> {
             String pinInput = pinEditText.getText().toString();
             if(pinInput.isEmpty()) {
-                Toast.makeText(context, context.getString(R.string.pin_input_noinput), Toast.LENGTH_LONG).show();
+                pinStatus.setText(context.getString(R.string.pin_input_noinput));
+                pinStatus.setVisibility(View.VISIBLE);
             } else {
                 final String localHash = Objects.requireNonNull(SignalStore.kbsValues().getLocalPinHash());
                 if(PinHashing.verifyLocalPinHash(localHash, pinInput)) {
                     callback.onPinCorrect();
+                    dialog.dismiss();
                 } else {
-                    callback.onPinWrong();
+                    pinStatus.setText(context.getString(R.string.pin_input_wrongpin));
+                    pinStatus.setVisibility(View.VISIBLE);
                 }
             }
-            dialog.dismiss();
+        });
+
+        pinEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                pinStatus.setText("");
+                pinStatus.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
         });
 
         cancel.setOnClickListener(view -> {
@@ -78,7 +98,6 @@ public final class SignalPinInputDialog {
 
     public interface Callback {
         void onPinCorrect();
-        void onPinWrong();
         void onDismissed();
     }
 }
