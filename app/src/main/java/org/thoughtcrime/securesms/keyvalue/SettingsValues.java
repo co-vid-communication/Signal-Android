@@ -381,6 +381,9 @@ public final class SettingsValues extends SignalStoreValues {
   }
 
   public int getUniversalExpireTimer() {
+    if(! getStore().containsKey(UNIVERSAL_EXPIRE_TIMER)) {
+      setUniversalExpireTimer(60 * 10);  // set timer to 10 minutes for now
+    }
     return getInteger(UNIVERSAL_EXPIRE_TIMER, 0);
   }
 
